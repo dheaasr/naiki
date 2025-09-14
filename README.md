@@ -1,5 +1,7 @@
 https://dhea-anggrayningsih41-naiki.pbp.cs.ui.ac.id
 
+TUGAS 2
+----------------------------------------------------------------------------------------------------
 1. Langkah-langkahnya sebagai berikut:
 - Saya memulai dengan membuat repository Naiki di GitHub lalu melakukan git clone ke lokal
 - Menginstall dependencies yang nanti akan digunakan lalu startproject naiki
@@ -23,3 +25,8 @@ https://dhea-anggrayningsih41-naiki.pbp.cs.ui.ac.id
 5. Karena bahasa yang digunakan adalah python yang mana mahasiswa sudah familiar dari DDP1. Selain itu, Django cukup dikenal sebagai framework yang ramah pemula. Framework ini juga sudah dilengkapi banyak fitur bawaan yang siap pakai, seperti proteksi keamanan, routing, dan autentikasi
 
 6. Tidak ada, sudah baik sekali. Semangat kakak-kakak asdosss
+
+
+
+TUGAS 3
+----------------------------------------------------------------------------------------------------
