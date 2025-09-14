@@ -1,3 +1,4 @@
+{% load currency %}
 <h1>Naiki Football Shop</h1>
 
 <h5>NPM: {{ npm }}</h5>
@@ -22,7 +23,7 @@
             {% if product.is_featured %} | 
                 <b>Featured</b>
             {% endif %}
-            Price: {{ product.price|floatformat:2 }} |
+            Price: Rp {{ product.price|rupiah }} |
             Liked by: <i>{{ product.likes }}</i>
         </p>
 
