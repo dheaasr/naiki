@@ -25,17 +25,17 @@ def show_json(request):
     json_data = serializers.serialize("json", product_list)
     return HttpResponse(json_data, content_type="application/json")
 
-def show_xml_by_id(request, product_id):
+def show_xml_by_id(request, id):
     try:
-        product_list = Product.objects.filter(pk=product_id)
+        product_list = Product.objects.filter(pk=id)
         xml_data = serializers.serialize("xml", product_list)
         return HttpResponse(xml_data, content_type="application/xml")
     except:
         return HttpResponse(status=404)
 
-def show_json_by_id(request, product_id):
+def show_json_by_id(request, id):
     try:
-        product_list = Product.objects.get(pk=product_id)
+        product_list = Product.objects.get(pk=id)
         json_data = serializers.serialize("json", [product_list])
         return HttpResponse(json_data, content_type="application/json")
     except:
@@ -53,8 +53,8 @@ def add_product(request):
     context = {'form': form}
     return render(request, "add_product.html", context)
 
-def show_product(request, product_id):
-    product = get_object_or_404(Product, pk=product_id)
+def show_product(request, id):
+    product = get_object_or_404(Product, pk=id)
 
     context = {
         'product': product
@@ -62,7 +62,10 @@ def show_product(request, product_id):
 
     return render(request, "show_product.html", context)
 
-def like_product(request, product_id):
-    product = get_object_or_404(Product, pk=product_id)
+def like_product(request, id):
+    product = get_object_or_404(Product, pk=id)
     product.increment_likes()
-    return redirect('main')
+    context = {
+        'product': product
+    }
+    return redirect("main:show_main")

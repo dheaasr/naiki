@@ -22,7 +22,7 @@
             {% if product.is_featured %} | 
                 <b>Featured</b>
             {% endif %}
-            Price: {{ product.price }} |
+            Price: {{ product.price|floatformat:2 }} |
             Liked by: <i>{{ product.likes }}</i>
         </p>
 

@@ -19,9 +19,9 @@ class Product(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
-    price = models.IntegerField()
+    price = models.FloatField()
     description = models.TextField()
-    thumbnail = models.URLField()
+    thumbnail = models.URLField(default="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgLNLbFmOl-wuybKGc6IrdKYGPxe62xr-wYA&s")
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='men')
     comment = models.TextField() #implementasinya nanti aja
     rating = models.IntegerField(choices=RATING_CHOICES, default=5) #nanti
