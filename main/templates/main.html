@@ -34,8 +34,8 @@
         <p>{{ product.description|truncatewords:25 }}...</p>
 
         <p>
-            <a href="{% url 'main:show_product' product.id %}"><button>Read More</button></a> 
             <a href="{% url 'main:like_product' product.id %}"><button>♥</button></a>
+            <a href="{% url 'main:show_product' product.id %}"><button>Product Details</button></a> 
         </p>
     </div>
 <hr>

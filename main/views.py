@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.core import serializers
 
 def show_main(request):
-    product_list = Product.objects.all()
+    product_list = Product.objects.all().order_by('-likes')
     context = {
         'npm' : '2406437262',
         'name': 'Dhea Anggrayningsih Syah Rony',
@@ -50,7 +50,9 @@ def add_product(request):
         form.save()
         return redirect('main:show_main')
 
-    context = {'form': form}
+    context = {
+        'form': form
+    }
     return render(request, "add_product.html", context)
 
 def show_product(request, id):
@@ -65,7 +67,4 @@ def show_product(request, id):
 def like_product(request, id):
     product = get_object_or_404(Product, pk=id)
     product.increment_likes()
-    context = {
-        'product': product
-    }
-    return redirect("main:show_main")
+    return redirect('main:show_main')
