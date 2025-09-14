@@ -6,8 +6,8 @@
 <p>
     <b><u>{{ product.get_category_display }}</u></b>
     {% if product.is_featured %} | 
-        <b>Featured</b>
-    {% endif %}
+        <b>Featured</b> |
+    {% endif %} 
     Price: ${{ product.price|floatformat:2 }} |
     Liked by: <i>{{ product.likes }}</i>
 </p>
