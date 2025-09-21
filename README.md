@@ -59,3 +59,35 @@ TUGAS 3
 
 7. Mengakses keempat URL di poin 2 menggunakan Postman, membuat screenshot dari hasil akses URL pada Postman, dan menambahkannya ke dalam README.md.
 == https://drive.google.com/drive/folders/1osWzuRcTFN9mNEVQUTvYGtt3vhIF4FaY?usp=sharing
+
+
+
+TUGAS 4
+----------------------------------------------------------------------------------------------------
+1. Apa itu Django AuthenticationForm? Jelaskan juga kelebihan dan kekurangannya.
+AuthenticationForm adalah form yang handling ketika ada user yang ingin mengakses aplikasi tersebut. Form ini menerima input autentikasi user dan memvalidasi username password dengan database
+Kelebihan: praktis karena bisa langsung memakai fitur bawaan dari Django (contoh, login(request, user)), membuat aplikasi lebih aman, terintegrasi langsung dengan Django
+Kekurangan: hanya mendukung username dan password, ketentuan untuk username dan password tidak fleksibel (kecuali ingin override), error message default saat terjadi kesalahan login tidak spesifik
+
+2. Apa perbedaan antara autentikasi dan otorisasi? Bagaiamana Django mengimplementasikan kedua konsep tersebut?
+Autentikasi adalah proses validasi identitas user ke dalam aplikasi sedangkan otorisasi adalah pembatasan oleh aplikasi, seperti hanya user tertentu yang bisa mengakses suatu halaman. Django mengimplementasikan autentikasi dengan mengakomodasi AuthenticationForm yang bisa diimplementasi di fungsi login pada views.py. Django mengimplementasikan otorisasi salah satunya dengan @login_required(login_url='/login') 
+
+3. Apa saja kelebihan dan kekurangan session dan cookies dalam konteks menyimpan state di aplikasi web?
+Kelebihan: 
+    Session: Kapasitasnya bisa menampung data kompleks, lebih aman karena tersimpan bukan di user, sulit dimodifikasi user secara langsung
+    Cookies: Disimpan di browser user sehingga tidak memberatkan server, bisa persistent cookie, mudah diakses
+Kekurangan:
+    Session: Tempat penyimpanannya di server, hilang saat session expired, kompleksitas lebih tinggi karena harus membagi data session per-user
+    Cookies: Kapasitasnya hanya sekitar 4kb, data bisa dilihat user, kurang memungkinkan untuk menyimpan data besar
+
+4. Apakah penggunaan cookies aman secara default dalam pengembangan web, atau apakah ada risiko potensial yang harus diwaspadai? Bagaimana Django menangani hal tersebut?
+Tidak selalu aman karena cookies bisa dengan mudah diakses user, terlebih jika tidak dilakukan enkripsi. Risiko potensialnya adalah pencurian cookie ataupun cross-site scripting. Django menanganinya dengan menyediakan fitur-fitur keamanan bawaan, seperti Secure, CSRF token, ataupun pengaturan expire cookie untuk timeout user
+
+5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
+- Pertama, saya membuat fungsi register untuk laman pendaftaran akun user di views.py milik main, lalu dikeluarkan ke register.html
+- Membuat fungsi handle login (halaman pertama yang dilihat user untuk mengakses aplikasi), setelahnya menambahkan @login_required ke fungsi-fungsi yang perlu autentikasi sebelum diakses
+- Membuat fungsi logout untuk hanlde tombol logout di paling bawah page
+- Menambahkan last_login agar browser user bisa menyimpan cookie (sesi) saat ini, kemudian ditampilkan sebagai sesi terakhir login di aplikasi
+- Menghubungkan antara Product dan user dengan menambahkan atribut user di models.py. Lalu, membuat nama orang yang login muncul di aplikasi saat create product dengan request.user.username
+- Saya memodifikasi dan membuat beberapa file html yang digunakan sebagai tampilan
+- Tidak lupa, saya melakukan routing ke fungsi-fungsi views.py yang baru ditambahkan

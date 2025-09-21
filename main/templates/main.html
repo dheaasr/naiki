@@ -21,7 +21,7 @@
     <button type="button">Highest Price</button>
 </a> 
 <a href="?filter=lowest_price">
-    <button type="button">Lower Price</button>
+    <button type="button">Lowest Price</button>
 </a> 
 <a href="?filter=my">
     <button type="button">My Products</button>
@@ -36,8 +36,8 @@
         <h2><a href="{% url 'main:show_product' product.id %}">{{ product.name }}</a></h2> 
         <!-- price, category, is_featured, likes -->
         <p>
-            <b><u>{{ product.get_category_display }}</u></b>
-            {% if product.is_featured %} | 
+            <b><u>{{ product.get_category_display }}</u></b> |
+            {% if product.is_featured %} 
                 <b>Featured</b> |
             {% endif %}
             Price: ${{ product.price|floatformat:2 }} |
@@ -67,3 +67,5 @@
 <a href="{% url 'main:logout_user' %}">
   <button>Logout</button>
 </a>
+
+<!-- TODO add new category kids or no, promo/hot, is featured jadi exclusive -->
