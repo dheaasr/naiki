@@ -6,12 +6,30 @@
 
 <h5>Class: {{ class }}</h5>
 
+<h5>Sesi terakhir login: {{ last_login }}</h5>
+
 <a href="{% url 'main:add_product' %}"> <button>+ Add Product</button> </a>
 
 <hr>
+<a href="?filter=all">
+    <button type="button">All Products</button>
+</a>
+<a href="?filter=popular">
+    <button type="button">Most Popular</button>
+</a> 
+<a href="?filter=highest_price">
+    <button type="button">Highest Price</button>
+</a> 
+<a href="?filter=lowest_price">
+    <button type="button">Lower Price</button>
+</a> 
+<a href="?filter=my">
+    <button type="button">My Products</button>
+</a> 
+<hr>
 
 {% if not product_list %}
-    <p>Belum ada produk yang ditambahkan.</p>
+    <p>No product.</p>
 {% else %}
     {% for product in product_list %}
     <div>
@@ -28,17 +46,24 @@
 
         {% if product.thumbnail %}
         <img src="{{ product.thumbnail }}" alt="Product Catalogue" width="300">
-        <br /><br />
+        <br />
+        <br />
         {% endif %}
 
         <p>{{ product.description|truncatewords:25 }}...</p>
-
         <p>
             <a href="{% url 'main:like_product' product.id %}"><button>♥</button></a>
             <a href="{% url 'main:show_product' product.id %}"><button>Product Details</button></a> 
         </p>
     </div>
 <hr>
+
     {% endfor %}
 
 {% endif %}
+
+<br/>
+<br/>
+<a href="{% url 'main:logout_user' %}">
+  <button>Logout</button>
+</a>

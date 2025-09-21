@@ -1,5 +1,6 @@
 from django.db import models
 import uuid
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -27,6 +28,7 @@ class Product(models.Model):
     rating = models.IntegerField(choices=RATING_CHOICES, default=5) #nanti
     is_featured = models.BooleanField()
     likes = models.IntegerField(default=0)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
     # increment = models.IntegerField(default=0)
     # rate_store = models.IntegerField(default=0)
