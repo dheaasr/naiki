@@ -91,3 +91,30 @@ Tidak selalu aman karena cookies bisa dengan mudah diakses user, terlebih jika t
 - Menghubungkan antara Product dan user dengan menambahkan atribut user di models.py. Lalu, membuat nama orang yang login muncul di aplikasi saat create product dengan request.user.username
 - Saya memodifikasi dan membuat beberapa file html yang digunakan sebagai tampilan
 - Tidak lupa, saya melakukan routing ke fungsi-fungsi views.py yang baru ditambahkan
+
+
+
+TUGAS 5
+----------------------------------------------------------------------------------------------------
+1. Jika terdapat beberapa CSS selector untuk suatu elemen HTML, jelaskan urutan prioritas pengambilan CSS selector tersebut!
+Browser akan memilih aturan dengan prioritas paling tinggi. Prioritasi ini terjadi karena HTML menggunakan banyak CSS. Urutan pengambilannya adalah inline style (langsung di dalam <>), id selector, class attributes seperti hover:, dan element selector. Jika terdapat aturan dengan tingkat prioritas yang sama, maka aturan yang ditulis paling terakhir di file CSS yang akan digunakan. Selain itu, terdapat juga deklarasi !important yang bisa mengalahkan semua aturan lainnya, bahkan inline style.
+
+2. Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design, serta jelaskan mengapa! 
+Responsive design memastikan semua tampilannya dalam berbagai device sama dalam artian tetap rapi dan aksesibel walau berbeda device. Contohnya yang menggunakan responsive design adalah YouTube. Contoh yang tidak menggunakan responsive design adalah website latihan saya saat codingcamp... saat itu belum paham mengenai hal ini, jadi website nya kompatibel di laptop saja
+
+3. Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!
+Ketiganya bisa diletakkan di inline CSS ataupun external css (style.css)
+Margin adalah jarak antarelemen, misalnya elemen button bisa tidak terlalu pinggir. Bisa diletakkan dengan margin:20px
+Border merupakan outline atau garis tepi label. Contohnya border:2px
+Padding memberi jarak antara konten dan elemennya, misalnya text dengan label. Contoh penggunaan di padding:15px
+
+4. Jelaskan konsep flex box dan grid layout beserta kegunaannya!
+Grid layout membagi halaman web menjadi bagian-bagian tertentu. Berfungsi untuk memudahkan developer dalam untuk menempatkan elemen karena sudah ada petak-petak yang ditentukan
+Flexbox digunakan agar elemen-elemennya bisa rapi, tersusun secara fleksibel, dan tidak memerlukan posisi yang di hard code. Contohnya, align-items: center yang membuat elemen diletakkan di center tanpa harus diatur jarak x dan y nya
+
+5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!
+- Membuat fungsi edit, beserta konfigurasinya (urls, function di views, dan template html). Setelah itu menambahkan tombol Edit
+- Membuat fungsi delete, beserta konfigurasinya (urls, function di views, dan template html). Setelah itu menambah button di sebelah edit yang bisa digunakan oleh user yang memiliki product tersebut
+- Modifikasi navbar
+- Memodifikasi tampilan pada templates agar website sesuai dengan color palette
+- Menambahkan no.png yang menampilkan foto jika belum ada produk yang ditambahkan

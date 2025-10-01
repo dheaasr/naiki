@@ -1,71 +1,106 @@
-<h1>Naiki Football Shop</h1>
+{% extends 'base.html' %}
+{% load static %}
 
-<h5>NPM: {{ npm }}</h5>
+{% block meta %}
+<title>Naiki Football Shop</title>
+{% endblock meta %}
 
-<h5>Name: {{ name }}</h5>
+{% block content %}
+{% include 'navbar.html' %}
 
-<h5>Class: {{ class }}</h5>
+<div class="bg-gray-800 w-full pt-16 min-h-screen"> 
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-<h5>Sesi terakhir login: {{ last_login }}</h5>
-
-<a href="{% url 'main:add_product' %}"> <button>+ Add Product</button> </a>
-
-<hr>
-<a href="?filter=all">
-    <button type="button">All Products</button>
-</a>
-<a href="?filter=popular">
-    <button type="button">Most Popular</button>
-</a> 
-<a href="?filter=highest_price">
-    <button type="button">Highest Price</button>
-</a> 
-<a href="?filter=lowest_price">
-    <button type="button">Lowest Price</button>
-</a> 
-<a href="?filter=my">
-    <button type="button">My Products</button>
-</a> 
-<hr>
-
-{% if not product_list %}
-    <p>No product.</p>
-{% else %}
-    {% for product in product_list %}
-    <div>
-        <h2><a href="{% url 'main:show_product' product.id %}">{{ product.name }}</a></h2> 
-        <!-- price, category, is_featured, likes -->
-        <p>
-            <b><u>{{ product.get_category_display }}</u></b> |
-            {% if product.is_featured %} 
-                <b>Featured</b> |
-            {% endif %}
-            Price: ${{ product.price|floatformat:2 }} |
-            Liked by: <i>{{ product.likes }}</i>
-        </p>
-
-        {% if product.thumbnail %}
-        <img src="{{ product.thumbnail }}" alt="Product Catalogue" width="300">
-        <br />
-        <br />
-        {% endif %}
-
-        <p>{{ product.description|truncatewords:25 }}...</p>
-        <p>
-            <a href="{% url 'main:like_product' product.id %}"><button>♥</button></a>
-            <a href="{% url 'main:show_product' product.id %}"><button>Product Details</button></a> 
-        </p>
+    <!-- Header Section -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-white mb-2">Naiki Football Shop</h1> 
+      <p class="text-gray-200">Discover your taste in football fashion and gear</p> 
     </div>
-<hr>
 
-    {% endfor %}
+    <!-- User Info -->
+    <div class="bg-gray-500 border border-gray-800 rounded-lg p-4 mb-8"> 
+      <h5 class="text-sm text-gray-200">Name: <span class="font-medium">{{ name }}</span></h5> 
+      <h5 class="text-sm text-gray-200">Last login: <span class="font-medium">{{ last_login }}</span></h5>
+    </div>
 
-{% endif %}
+    <!-- Filter & Add Product Section -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 bg-gray-200 rounded-lg border border-gray-200 p-4">
+      <div class="flex flex-wrap gap-3 mb-4 sm:mb-0">
+        <a href="?filter=all" class="{% if request.GET.filter == 'all' or not request.GET.filter %} bg-gray-950 text-white {% else %} bg-gray-800 text-white border border-gray-300 {% endif %} px-4 py-2 rounded-md font-medium transition-colors hover:bg-gray-950 hover:text-white"> 
+          All Products
+        </a>
+        <a href="?filter=popular" class="{% if request.GET.filter == 'popular' %} bg-gray-950 text-white {% else %} bg-gray-800 text-white border border-gray-300 {% endif %} px-4 py-2 rounded-md font-medium transition-colors hover:bg-gray-950 hover:text-white"> 
+          Most Popular
+        </a>
+        <a href="?filter=highest_price" class="{% if request.GET.filter == 'highest_price' %} bg-gray-950 text-white {% else %} bg-gray-800 text-white border border-gray-300 {% endif %} px-4 py-2 rounded-md font-medium transition-colors hover:bg-gray-950 hover:text-white"> 
+          Highest Price
+        </a>
+        <a href="?filter=lowest_price" class="{% if request.GET.filter == 'lowest_price' %} bg-gray-950 text-white {% else %} bg-gray-800 text-white border border-gray-300 {% endif %} px-4 py-2 rounded-md font-medium transition-colors hover:bg-gray-950 hover:text-white"> 
+          Lowest Price
+        </a>
+        <a href="?filter=my" class="{% if request.GET.filter == 'my' %} bg-gray-950 text-white {% else %} bg-gray-800 text-white border border-gray-300 {% endif %} px-4 py-2 rounded-md font-medium transition-colors hover:bg-gray-950 hover:text-white"> 
+          My Products
+        </a>
+      </div>
+      <a href="{% url 'main:add_product' %}" class="inline-flex items-center px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-950 transition-colors"> 
+        + Add Product
+      </a>
+    </div>
 
-<br/>
-<br/>
-<a href="{% url 'main:logout_user' %}">
-  <button>Logout</button>
-</a>
+    <!-- Products Grid -->
+    {% if not product_list %}
+      <div class="bg-gray-700 rounded-lg border border-gray-200 p-12 text-center"> 
+        <div class="w-32 h-32 mx-auto mb-4">
+          <img src="{% static 'image/no.png' %}" alt="No product available" class="w-full h-full object-contain">
+        </div>
+        <h3 class="text-lg font-medium text-white mb-2">No product found</h3> 
+        <p class="text-gray-200 mb-6">Be the first to add a football product in our shop.</p> 
+        <a href="{% url 'main:add_product' %}" class="inline-flex items-center px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-950 transition-colors"> 
+          Add Product
+        </a>
+      </div>
+    {% else %}
+      <div class="flex flex-col space-y-6">
+        {% for product in product_list %}
+          <div class="bg-stone-500 rounded-lg shadow border border-gray-200 overflow-hidden"> 
+            {% if product.thumbnail %}
+              <img src="{{ product.thumbnail }}" alt="Product Image" class="w-full h-48 object-cover">
+            {% endif %}
+            <div class="p-4">
+              <h2 class="text-lg font-semibold text-white mb-2"> 
+                <a href="{% url 'main:show_product' product.id %}" class="hover:text-gray-200 transition-colors"> 
+                  {{ product.name }}
+                </a>
+              </h2>
+              <p class="text-sm text-gray-200 mb-2"> 
+                <b><u>{{ product.get_category_display }}</u></b> | 
+                {% if product.is_featured %}<span class="text-white font-semibold">Featured</span> |{% endif %} 
+                Price: ${{ product.price|floatformat:2 }} | 
+                Likes: <i>{{ product.likes }}</i>
+              </p>
+              <p class="text-gray-300 text-sm mb-4">{{ product.description|truncatewords:20 }}...</p> 
+              <div class="flex flex-wrap gap-2">
+                <a href="{% url 'main:like_product' product.id %}" class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-950 hover:text-white transition">♥</a> 
+                <a href="{% url 'main:show_product' product.id %}" class="px-3 py-1 bg-gray-700 text-white rounded-md hover:bg-gray-950 transition">Details</a>
+                {% if user.is_authenticated and product.user == user %}
+                  <a href="{% url 'main:edit_product' product.pk %}" class="px-3 py-1 bg-gray-600 text-white rounded-md hover:bg-gray-950 transition">Edit</a> 
+                  <a href="{% url 'main:delete_product' product.pk %}" class="px-3 py-1 bg-gray-600 text-white rounded-md hover:bg-gray-950 transition">Delete</a> 
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
 
-<!-- TODO add new category kids or no, promo/hot, is featured jadi exclusive -->
+    <!-- Logout Button -->
+    <div class="mt-10 text-center">
+      <a href="{% url 'main:logout_user' %}" class="inline-flex items-center px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-950 transition">
+        Logout
+      </a>
+    </div>
+
+  </div>
+</div>
+
+{% endblock content %}
