@@ -1,77 +1,138 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block meta %}
+<title>{{ product.name }} - Naiki Football Shop</title>
+{% endblock meta %}
+
 {% block content %}
-<div class="bg-gray-500 w-full min-h-screen">
+<div class="bg-gray-800 w-full min-h-screen">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
+
         <!-- Back Navigation -->
         <div class="mb-6">
-            <a href="{% url 'main:show_main' %}" class="text-gray-100 hover:text-gray-300 font-medium transition-colors">
-                ← Back to Home
+            <a href="{% url 'main:show_main' %}" class="text-gray-200 hover:text-white font-medium transition-colors">
+                ← Back to Shop
             </a>
         </div>
-        
-        <!-- Product -->
-        <article class="bg-gray-200 rounded-lg border border-gray-800 overflow-hidden">
-            
-            <!-- Header -->
+
+        <!-- Loading / Error / Content -->
+        <div id="loading-state" class="bg-gray-700 rounded-lg border border-gray-600 p-12 text-center">
+            <svg class="animate-spin h-8 w-8 text-green-600 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+            </svg>
+            <p class="text-gray-200 mt-3">Loading product detail...</p>
+        </div>
+
+        <div id="error-state" class="bg-gray-700 rounded-lg border border-gray-600 p-12 text-center hidden">
+            <div class="text-red-500 text-5xl mb-4">⚠️</div>
+            <h3 class="text-lg font-medium text-gray-200 mb-2">Failed to load product</h3>
+            <p class="text-gray-400">Please try again later.</p>
+        </div>
+
+        <article id="product-content" class="bg-gray-700 rounded-lg border border-gray-600 overflow-hidden hidden">
+
             <div class="p-6 sm:p-8">
-                <div class="flex flex-wrap items-center gap-2 mb-4">
-                    <span class="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-blue-600 text-white">
-                        {{ product.get_category_display }}
-                    </span>
-                    {% if product.is_featured %}
-                        <span class="inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-red-800 text-red-100">
-                            Featured
-                        </span>
-                    {% endif %}
-                </div>
-                
-                <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-4">
-                    {{ product.name }}
-                </h1>
-                
-                <div class="flex flex-wrap items-center text-sm text-gray-500 gap-4">
-                    <span>Price: <b class="text-gray-900">${{ product.price|floatformat:2 }}</b></span>
-                    <span><b class="text-gray-900">{{ product.likes }}</b> likes</span>
+                <div id="badges-container" class="flex flex-wrap items-center gap-2 mb-4"></div>
+                <h1 id="product-title" class="text-3xl sm:text-4xl font-bold text-white leading-tight mb-4"></h1>
+                <div class="flex flex-wrap items-center text-sm text-gray-300 gap-4">
+                    <span>Price: <b id="product-price" class="text-white"></b></span>
+                    <span>Likes: <b id="product-likes" class="text-white"></b></span>
                 </div>
             </div>
 
-            <!-- Thumbnail -->
-            {% if product.thumbnail %}
-                <div class="px-6 sm:px-8">
-                    <img src="{{ product.thumbnail }}" 
-                         alt="{{ product.name }}" 
-                         class="w-full h-64 sm:h-80 lg:h-96 object-cover rounded-lg">
-                </div>
-            {% endif %}
+            <div id="featured-image-container" class="px-6 sm:px-8 hidden">
+                <img id="featured-image" src="" alt="" class="w-full h-64 sm:h-80 lg:h-96 object-cover rounded-lg">
+            </div>
 
-            <!-- Description -->
             <div class="p-6 sm:p-8">
                 <div class="prose prose-lg max-w-none">
-                    <div class="text-gray-700 leading-relaxed whitespace-pre-line text-base sm:text-lg">
-                        {{ product.description }}
-                    </div>
+                    <div id="product-description" class="text-gray-300 leading-relaxed whitespace-pre-line text-base sm:text-lg"></div>
                 </div>
             </div>
 
-            <!-- Author Info -->
-            <div class="border-t border-gray-800 p-6 sm:p-8 bg-gray-50">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-gray-500">Designer</p>
-                        <div class="font-medium text-gray-900">
-                            {% if product.user %}
-                                <p>{{ product.user.username }}</p>
-                            {% else %}
-                                <p>Naiki's Collection</p>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
+            <div class="border-t border-gray-600 p-6 sm:p-8 bg-gray-800">
+                <p id="product-author" class="font-medium text-gray-200">Designer: Loading...</p>
             </div>
+
         </article>
     </div>
 </div>
+
+<script>
+const PRODUCT_DETAIL_ENDPOINT = "{% url 'main:show_json_by_id' product.id %}";
+
+// DOM Elements
+const loadingState = document.getElementById('loading-state');
+const errorState = document.getElementById('error-state');
+const productContent = document.getElementById('product-content');
+const badgesContainer = document.getElementById('badges-container');
+const productTitle = document.getElementById('product-title');
+const productPrice = document.getElementById('product-price');
+const productLikes = document.getElementById('product-likes');
+const featuredImageContainer = document.getElementById('featured-image-container');
+const featuredImage = document.getElementById('featured-image');
+const productDescription = document.getElementById('product-description');
+const productAuthor = document.getElementById('product-author');
+
+function showState(state) {
+    loadingState.classList.toggle('hidden', state !== 'loading');
+    errorState.classList.toggle('hidden', state !== 'error');
+    productContent.classList.toggle('hidden', state !== 'ready');
+}
+
+function getCategoryLabel(categoryCode) {
+    const mapping = { men: 'Men', women: 'Women' };
+    return mapping[categoryCode] || categoryCode;
+}
+
+function renderProduct(product) {
+    productTitle.textContent = product.name;
+    document.title = `${product.name} - Naiki Football Shop`;
+
+    badgesContainer.innerHTML = '';
+    const catBadge = document.createElement('span');
+    catBadge.className = 'inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-green-600 text-white';
+    catBadge.textContent = getCategoryLabel(product.category);
+    badgesContainer.appendChild(catBadge);
+
+    if (product.is_featured) {
+        const featBadge = document.createElement('span');
+        featBadge.className = 'inline-flex items-center px-3 py-1 rounded-md text-xs font-medium bg-yellow-100 text-yellow-800';
+        featBadge.textContent = 'Featured';
+        badgesContainer.appendChild(featBadge);
+    }
+
+    productPrice.textContent = `$${parseFloat(product.price).toFixed(2)}`;
+    productLikes.textContent = product.likes || 0;
+
+    if (product.thumbnail) {
+        featuredImage.src = product.thumbnail;
+        featuredImage.alt = product.name;
+        featuredImageContainer.classList.remove('hidden');
+    } else {
+        featuredImageContainer.classList.add('hidden');
+    }
+
+    productDescription.textContent = product.description || "";
+    productAuthor.textContent = `Designer: ${product.user_username || "Naiki's Collection"}`;
+}
+
+async function loadProductDetail() {
+    try {
+        showState('loading');
+        const res = await fetch(PRODUCT_DETAIL_ENDPOINT, { headers: { 'Accept': 'application/json' } });
+        if (!res.ok) throw new Error('Failed to fetch');
+        const data = await res.json();
+        renderProduct(data);
+        showState('ready');
+    } catch (err) {
+        console.error(err);
+        showState('error');
+    }
+}
+
+loadProductDetail();
+</script>
 {% endblock content %}

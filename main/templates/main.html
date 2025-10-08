@@ -1,106 +1,140 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block meta %}
-<title>Naiki Football Shop</title>
-{% endblock meta %}
-
 {% block content %}
 {% include 'navbar.html' %}
 
-<div class="bg-gray-800 w-full pt-16 min-h-screen"> 
+<div class="bg-gray-800 w-full pt-16 min-h-screen">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-    <!-- Header Section -->
+    <!-- Header -->
     <div class="mb-8">
-      <h1 class="text-3xl font-bold text-white mb-2">Naiki Football Shop</h1> 
-      <p class="text-gray-200">Discover your taste in football fashion and gear</p> 
+      <h1 class="text-3xl font-bold text-white mb-2">Naiki Football Shop</h1>
+      <p class="text-gray-200">Discover your taste in football fashion and gear</p>
     </div>
 
     <!-- User Info -->
-    <div class="bg-gray-500 border border-gray-800 rounded-lg p-4 mb-8"> 
-      <h5 class="text-sm text-gray-200">Name: <span class="font-medium">{{ name }}</span></h5> 
+    <div class="bg-gray-500 border border-gray-800 rounded-lg p-4 mb-8">
+      <h5 class="text-sm text-gray-200">Name: <span class="font-medium">{{ name }}</span></h5>
       <h5 class="text-sm text-gray-200">Last login: <span class="font-medium">{{ last_login }}</span></h5>
     </div>
 
-    <!-- Filter & Add Product Section -->
+    <!-- Filter & Add Product -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 bg-gray-200 rounded-lg border border-gray-200 p-4">
       <div class="flex flex-wrap gap-3 mb-4 sm:mb-0">
-        <a href="?filter=all" class="{% if request.GET.filter == 'all' or not request.GET.filter %} bg-gray-950 text-white {% else %} bg-gray-800 text-white border border-gray-300 {% endif %} px-4 py-2 rounded-md font-medium transition-colors hover:bg-gray-950 hover:text-white"> 
-          All Products
-        </a>
-        <a href="?filter=popular" class="{% if request.GET.filter == 'popular' %} bg-gray-950 text-white {% else %} bg-gray-800 text-white border border-gray-300 {% endif %} px-4 py-2 rounded-md font-medium transition-colors hover:bg-gray-950 hover:text-white"> 
-          Most Popular
-        </a>
-        <a href="?filter=highest_price" class="{% if request.GET.filter == 'highest_price' %} bg-gray-950 text-white {% else %} bg-gray-800 text-white border border-gray-300 {% endif %} px-4 py-2 rounded-md font-medium transition-colors hover:bg-gray-950 hover:text-white"> 
-          Highest Price
-        </a>
-        <a href="?filter=lowest_price" class="{% if request.GET.filter == 'lowest_price' %} bg-gray-950 text-white {% else %} bg-gray-800 text-white border border-gray-300 {% endif %} px-4 py-2 rounded-md font-medium transition-colors hover:bg-gray-950 hover:text-white"> 
-          Lowest Price
-        </a>
-        <a href="?filter=my" class="{% if request.GET.filter == 'my' %} bg-gray-950 text-white {% else %} bg-gray-800 text-white border border-gray-300 {% endif %} px-4 py-2 rounded-md font-medium transition-colors hover:bg-gray-950 hover:text-white"> 
-          My Products
-        </a>
+        <a href="?filter=all" class="{% if request.GET.filter == 'all' or not request.GET.filter %} bg-gray-950 text-white {% else %} bg-gray-800 text-white border border-gray-300 {% endif %} px-4 py-2 rounded-md font-medium transition-colors hover:bg-gray-950 hover:text-white">All Products</a>
+        <a href="?filter=popular" class="{% if request.GET.filter == 'popular' %} bg-gray-950 text-white {% else %} bg-gray-800 text-white border border-gray-300 {% endif %} px-4 py-2 rounded-md font-medium transition-colors hover:bg-gray-950 hover:text-white">Most Popular</a>
+        <a href="?filter=highest_price" class="{% if request.GET.filter == 'highest_price' %} bg-gray-950 text-white {% else %} bg-gray-800 text-white border border-gray-300 {% endif %} px-4 py-2 rounded-md font-medium transition-colors hover:bg-gray-950 hover:text-white">Highest Price</a>
+        <a href="?filter=lowest_price" class="{% if request.GET.filter == 'lowest_price' %} bg-gray-950 text-white {% else %} bg-gray-800 text-white border border-gray-300 {% endif %} px-4 py-2 rounded-md font-medium transition-colors hover:bg-gray-950 hover:text-white">Lowest Price</a>
+        <a href="?filter=my" class="{% if request.GET.filter == 'my' %} bg-gray-950 text-white {% else %} bg-gray-800 text-white border border-gray-300 {% endif %} px-4 py-2 rounded-md font-medium transition-colors hover:bg-gray-950 hover:text-white">My Products</a>
       </div>
-      <a href="{% url 'main:add_product' %}" class="inline-flex items-center px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-950 transition-colors"> 
-        + Add Product
-      </a>
+      <a href="{% url 'main:add_product' %}" class="inline-flex items-center px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-950 transition-colors">+ Add Product</a>
     </div>
 
-    <!-- Products Grid -->
-    {% if not product_list %}
-      <div class="bg-gray-700 rounded-lg border border-gray-200 p-12 text-center"> 
-        <div class="w-32 h-32 mx-auto mb-4">
-          <img src="{% static 'image/no.png' %}" alt="No product available" class="w-full h-full object-contain">
-        </div>
-        <h3 class="text-lg font-medium text-white mb-2">No product found</h3> 
-        <p class="text-gray-200 mb-6">Be the first to add a football product in our shop.</p> 
-        <a href="{% url 'main:add_product' %}" class="inline-flex items-center px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-950 transition-colors"> 
-          Add Product
-        </a>
-      </div>
-    {% else %}
-      <div class="flex flex-col space-y-6">
-        {% for product in product_list %}
-          <div class="bg-stone-500 rounded-lg shadow border border-gray-200 overflow-hidden"> 
-            {% if product.thumbnail %}
-              <img src="{{ product.thumbnail }}" alt="Product Image" class="w-full h-48 object-cover">
-            {% endif %}
-            <div class="p-4">
-              <h2 class="text-lg font-semibold text-white mb-2"> 
-                <a href="{% url 'main:show_product' product.id %}" class="hover:text-gray-200 transition-colors"> 
-                  {{ product.name }}
-                </a>
-              </h2>
-              <p class="text-sm text-gray-200 mb-2"> 
-                <b><u>{{ product.get_category_display }}</u></b> | 
-                {% if product.is_featured %}<span class="text-white font-semibold">Featured</span> |{% endif %} 
-                Price: ${{ product.price|floatformat:2 }} | 
-                Likes: <i>{{ product.likes }}</i>
-              </p>
-              <p class="text-gray-300 text-sm mb-4">{{ product.description|truncatewords:20 }}...</p> 
-              <div class="flex flex-wrap gap-2">
-                <a href="{% url 'main:like_product' product.id %}" class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-950 hover:text-white transition">♥</a> 
-                <a href="{% url 'main:show_product' product.id %}" class="px-3 py-1 bg-gray-700 text-white rounded-md hover:bg-gray-950 transition">Details</a>
-                {% if user.is_authenticated and product.user == user %}
-                  <a href="{% url 'main:edit_product' product.pk %}" class="px-3 py-1 bg-gray-600 text-white rounded-md hover:bg-gray-950 transition">Edit</a> 
-                  <a href="{% url 'main:delete_product' product.pk %}" class="px-3 py-1 bg-gray-600 text-white rounded-md hover:bg-gray-950 transition">Delete</a> 
-                {% endif %}
-              </div>
-            </div>
-          </div>
-        {% endfor %}
-      </div>
-    {% endif %}
+    <!-- Loading & Error -->
+    <div id="loading" class="bg-gray-700 rounded-lg border border-gray-200 p-12 text-center hidden">
+      <svg class="animate-spin h-8 w-8 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+      </svg>
+      <p class="text-gray-200 mt-3">Loading products...</p>
+    </div>
+    <div id="error" class="hidden text-red-400 text-center mb-4"></div>
 
-    <!-- Logout Button -->
+    <!-- Products Grid -->
+    <div id="grid" class="flex flex-col space-y-6 mb-4"></div>
+
+    <!-- Logout -->
     <div class="mt-10 text-center">
-      <a href="{% url 'main:logout_user' %}" class="inline-flex items-center px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-950 transition">
-        Logout
-      </a>
+      <a href="{% url 'main:logout_user' %}" class="inline-flex items-center px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-950 transition">Logout</a>
     </div>
 
   </div>
 </div>
+
+<!-- Toast container -->
+<div id="toast-container" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 flex flex-col items-center space-y-2"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const grid = document.getElementById('grid');
+  const loading = document.getElementById('loading');
+  const error = document.getElementById('error');
+  const currentUserId = "{{ user.id|default_if_none:'' }}";
+  let activeFilter = "{{ request.GET.filter|default:'all' }}";
+  let allProductsData = [];
+
+  const PRODUCTS_API_ENDPOINT = "{% url 'main:show_json' %}";
+
+  // Toast function
+  function showToast(message, type='info', duration=3000) {
+    const toast = document.createElement('div');
+    toast.className = `px-4 py-2 rounded shadow text-white transition-opacity duration-300 ${
+      type === 'success' ? 'bg-green-500' :
+      type === 'error' ? 'bg-red-500' : 'bg-gray-700'
+    }`;
+    toast.textContent = message;
+    document.getElementById('toast-container').appendChild(toast);
+    setTimeout(() => { toast.remove(); }, duration);
+  }
+
+  function displayProducts(products) {
+    grid.innerHTML = '';
+    products.forEach(product => {
+      const productDetailUrl = `/product/${product.id}/`;
+      const card = document.createElement('div');
+      card.className = 'bg-stone-500 rounded-lg shadow border border-gray-200 overflow-hidden';
+      card.innerHTML = `
+        ${product.thumbnail ? `<img src="${product.thumbnail}" class="w-full h-48 object-cover rounded-t-lg">` : ''}
+        <div class="p-4">
+          <h2 class="text-lg font-semibold text-white mb-2">
+            <a href="${productDetailUrl}" class="hover:text-gray-200 transition">${product.name}</a>
+          </h2>
+          <p class="text-gray-300 text-sm mb-2">
+            Price: $${product.price} | Likes: <i>${product.likes || 0}</i>
+          </p>
+          <p class="text-gray-300 text-sm mb-4">${product.description}</p>
+          <div class="flex flex-wrap gap-2 mt-2">
+            <a href="/like/${product.id}/" class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-950 hover:text-white transition">♥</a>
+            <a href="${productDetailUrl}" class="px-3 py-1 bg-gray-700 text-white rounded-md hover:bg-gray-950 transition">Details</a>
+            ${product.user_id && product.user_id === currentUserId
+              ? `<a href="/product/${product.id}/edit" class="px-3 py-1 bg-gray-600 text-white rounded-md hover:bg-gray-950 transition">Edit</a>
+                 <a href="/product/${product.id}/delete" class="px-3 py-1 bg-gray-600 text-white rounded-md hover:bg-gray-950 transition">Delete</a>`
+              : ''}
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function filterProducts() {
+    let filtered = [...allProductsData];
+    if(activeFilter === 'my') filtered = filtered.filter(p => p.user_id === currentUserId);
+    displayProducts(filtered);
+  }
+
+  async function fetchProducts() {
+    try {
+      loading.classList.remove('hidden');
+      error.classList.add('hidden');
+      const res = await fetch(PRODUCTS_API_ENDPOINT);
+      if(!res.ok) throw new Error('Failed to fetch');
+      allProductsData = await res.json();
+      filterProducts();
+      showToast('Products loaded successfully', 'success');
+    } catch(err) {
+      console.error(err);
+      error.textContent = "Failed to load products";
+      error.classList.remove('hidden');
+      showToast('Failed to load products', 'error');
+    } finally {
+      loading.classList.add('hidden');
+    }
+  }
+
+  fetchProducts();
+});
+</script>
 
 {% endblock content %}

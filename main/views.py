@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from main.models import Product
 from main.forms import ProductForm
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.core import serializers
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
@@ -10,6 +10,11 @@ from django.contrib.auth.decorators import login_required
 import datetime
 from zoneinfo import ZoneInfo
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.utils.html import strip_tags
+
+DEFAULT_THUMBNAIL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgLNLbFmOl-wuybKGc6IrdKYGPxe62xr-wYA&s"
 
 @login_required(login_url='/login')
 def show_main(request):
@@ -42,23 +47,52 @@ def show_xml(request):
      return HttpResponse(xml_data, content_type="application/xml")
 
 def show_json(request):
-    product_list = Product.objects.all()
-    json_data = serializers.serialize("json", product_list)
-    return HttpResponse(json_data, content_type="application/json")
-
-def show_xml_by_id(request, id):
     try:
-        product_list = Product.objects.filter(pk=id)
-        xml_data = serializers.serialize("xml", product_list)
-        return HttpResponse(xml_data, content_type="application/xml")
-    except:
-        return HttpResponse(status=404)
+        products = Product.objects.all()
+        data = [
+            {
+                "id": p.id,
+                "name": p.name,
+                "description": p.description,
+                "price": float(p.price),
+                "thumbnail": p.thumbnail if p.thumbnail else "",
+                "user_id": p.user.id if p.user else None,  # <--- aman
+                "likes": p.likes,
+            }
+            for p in products
+        ]
+        return JsonResponse(data, safe=False)
+    except Exception as e:
+        print("Error fetching products:", e)
+        return JsonResponse({"error": str(e)}, status=500)
+
+
 
 def show_json_by_id(request, id):
     try:
+        product = Product.objects.select_related('user').get(pk=id)
+        data = {
+            'id': product.id,
+            'name': product.name,
+            'description': product.description,
+            'price': float(product.price),  # pastikan JSON friendly
+            'category': product.category,
+            'category_display': product.get_category_display(),
+            'thumbnail': product.thumbnail.url if product.thumbnail else None,
+            'is_featured': product.is_featured,
+            'likes': product.likes,
+            'user_id': product.user_id,
+            'user_username': product.user.username if product.user else None,
+        }
+        return JsonResponse(data)
+    except Product.DoesNotExist:
+        return JsonResponse({'detail': 'Not found'}, status=404)
+
+def show_xml_by_id(request, id):
+    try:
         product_list = Product.objects.get(pk=id)
-        json_data = serializers.serialize("json", [product_list])
-        return HttpResponse(json_data, content_type="application/json")
+        xml_data = serializers.serialize("xml", [product_list])
+        return HttpResponse(xml_data, content_type="application/xml")
     except:
         return HttpResponse(status=404)
     
@@ -145,4 +179,38 @@ def delete_product(request, id):
     prod = get_object_or_404(Product, pk=id)
     prod.delete()
     return HttpResponseRedirect(reverse('main:show_main'))
+
+@login_required
+@csrf_exempt
+def add_product_entry_ajax(request):
+    if request.method == "POST":
+        name = request.POST.get("name")
+        description = request.POST.get("description")
+        price = request.POST.get("price")
+        thumbnail = request.POST.get("thumbnail") or DEFAULT_THUMBNAIL
+        category = request.POST.get("category", "men")
+        is_featured = request.POST.get("is_featured") == "true" or request.POST.get("is_featured") == "on"
+        user = request.user
+
+        product = Product.objects.create(
+            name=name,
+            description=description,
+            price=price,
+            thumbnail=thumbnail,
+            category=category,
+            is_featured=is_featured,
+            user=user
+        )
+        return JsonResponse({
+            "id": str(product.id),
+            "name": product.name,
+            "description": product.description,
+            "price": product.price,
+            "thumbnail": product.thumbnail,
+            "category": product.category,
+            "is_featured": product.is_featured,
+            "likes": product.likes,
+            "user_id": product.user.id
+        })
+    return JsonResponse({"error": "Invalid request"}, status=400)
 

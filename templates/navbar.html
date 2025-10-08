@@ -1,97 +1,182 @@
+<!-- Navbar -->
 <nav class="fixed top-0 left-0 w-full bg-white border-b border-gray-200 shadow-sm z-50">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        <div class="flex items-center">
-          <h1 class="text-xl font-semibold text-gray-900">
-            <span class="text-gray-600">Naiki</span> 
-          </h1>
-        </div>
-        
-        <!-- Desktop Navigation -->
-        <div class="hidden md:flex items-center space-x-8">
-          <a href="/" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">
-            Home
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+
+      <!-- Logo -->
+      <div class="flex items-center">
+        <h1 class="text-xl font-semibold text-gray-900">
+          <span class="text-gray-600">Naiki</span>
+        </h1>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <div class="hidden md:flex items-center space-x-4">
+        <a href="/" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">
+          Home
+        </a>
+
+        <!-- Add Product Desktop Button -->
+        <button id="openModalBtnDesktop" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">
+          Add Product
+        </button>
+      </div>
+
+      <!-- Desktop User Section -->
+      <div class="hidden md:flex items-center space-x-6">
+        {% if user.is_authenticated %}
+          <div class="text-right">
+            <div class="text-sm font-medium text-gray-900">{{ name|default:user.username }}</div>
+            <div class="text-xs text-gray-500">{{ npm|default:"Student" }} - {{ class|default:"Class" }}</div>
+          </div>
+          <a href="{% url 'main:logout_user' %}" class="text-red-600 hover:text-red-700 font-medium transition-colors">
+            Logout
           </a>
-          <a href="{% url 'main:add_product' %}" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">
-            Add Product
+        {% else %}
+          <a href="{% url 'main:login_user' %}" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">
+            Login
           </a>
-        </div>
-        
-        <!-- Desktop User Section -->
-        <div class="hidden md:flex items-center space-x-6">
-          {% if user.is_authenticated %}
-            <div class="text-right">
-              <div class="text-sm font-medium text-gray-900">{{ name|default:user.username }}</div>
-              <div class="text-xs text-gray-500">{{ npm|default:"Student" }} - {{ class|default:"Class" }}</div>
-            </div>
-            <a href="{% url 'main:logout_user' %}" class="text-red-600 hover:text-red-700 font-medium transition-colors">
-              Logout
-            </a>
-          {% else %}
-            <a href="{% url 'main:login_user' %}" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">
+          <a href="{% url 'main:register' %}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-medium transition-colors">
+            Register
+          </a>
+        {% endif %}
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <div class="md:hidden flex items-center">
+        <button class="mobile-menu-button p-2 text-gray-600 hover:text-gray-900 transition-colors">
+          <span class="sr-only">Open menu</span>
+          <div class="w-6 h-6 flex flex-col justify-center items-center">
+            <span class="bg-current block h-0.5 w-6 rounded-sm transition-all duration-300"></span>
+            <span class="bg-current block h-0.5 w-6 rounded-sm my-0.5 transition-all duration-300"></span>
+            <span class="bg-current block h-0.5 w-6 rounded-sm transition-all duration-300"></span>
+          </div>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu hidden md:hidden bg-white border-t border-gray-200">
+    <div class="px-6 py-4 space-y-4">
+      <!-- Navigation Links -->
+      <div class="space-y-1">
+        <a href="/" class="block text-gray-600 hover:text-gray-900 font-medium py-3 transition-colors">
+          Home
+        </a>
+        <!-- Add Product Mobile Button -->
+        <button id="openModalBtnMobile" class="text-gray-600 hover:text-gray-900 font-medium transition-colors">
+          Add Product
+        </button>
+      </div>
+
+      <!-- User Section -->
+      <div class="border-t border-gray-200 pt-4">
+        {% if user.is_authenticated %}
+          <div class="mb-4">
+            <div class="font-medium text-gray-900">{{ name|default:user.username }}</div>
+            <div class="text-sm text-gray-500">{{ npm|default:"Student" }} - {{ class|default:"Class" }}</div>
+          </div>
+          <a href="{% url 'main:logout_user' %}" class="block text-red-600 hover:text-red-700 font-medium py-3 transition-colors">
+            Logout
+          </a>
+        {% else %}
+          <div class="space-y-3">
+            <a href="{% url 'main:login_user' %}" class="block text-gray-600 hover:text-gray-900 font-medium py-3 transition-colors">
               Login
             </a>
-            <a href="{% url 'main:register' %}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-medium transition-colors">
+            <a href="{% url 'main:register' %}" class="block bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded text-center transition-colors">
               Register
             </a>
-          {% endif %}
-        </div>
-        
-        <!-- Mobile Menu Button -->
-        <div class="md:hidden flex items-center">
-          <button class="mobile-menu-button p-2 text-gray-600 hover:text-gray-900 transition-colors">
-            <span class="sr-only">Open menu</span>
-            <div class="w-6 h-6 flex flex-col justify-center items-center">
-              <span class="bg-current block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm"></span>
-              <span class="bg-current block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm my-0.5"></span>
-              <span class="bg-current block transition-all duration-300 ease-out h-0.5 w-6 rounded-sm"></span>
-            </div>
-          </button>
-        </div>
+          </div>
+        {% endif %}
       </div>
     </div>
-    <!-- Mobile Menu -->
-    <div class="mobile-menu hidden md:hidden bg-white border-t border-gray-200">
-      <div class="px-6 py-4 space-y-4">
-        <!-- Mobile Navigation Links -->
-        <div class="space-y-1">
-          <a href="/" class="block text-gray-600 hover:text-gray-900 font-medium py-3 transition-colors">
-            Home
-          </a>
-          <a href="{% url 'main:add_product' %}" class="block text-gray-600 hover:text-gray-900 font-medium py-3 transition-colors">
-            Add Product
-          </a>
-        </div>
-        
-        <!-- Mobile User Section -->
-        <div class="border-t border-gray-200 pt-4">
-          {% if user.is_authenticated %}
-            <div class="mb-4">
-              <div class="font-medium text-gray-900">{{ name|default:user.username }}</div>
-              <div class="text-sm text-gray-500">{{ npm|default:"Student" }} - {{ class|default:"Class" }}</div>
-            </div>
-            <a href="{% url 'main:logout_user' %}" class="block text-red-600 hover:text-red-700 font-medium py-3 transition-colors">
-              Logout
-            </a>
-          {% else %}
-            <div class="space-y-3">
-              <a href="{% url 'main:login_user' %}" class="block text-gray-600 hover:text-gray-900 font-medium py-3 transition-colors">
-                Login
-              </a>
-              <a href="{% url 'main:register' %}" class="block bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded text-center transition-colors">
-                Register
-              </a>
-            </div>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-    <script>
-      const btn = document.querySelector("button.mobile-menu-button");
-      const menu = document.querySelector(".mobile-menu");
-    
-      btn.addEventListener("click", () => {
-        menu.classList.toggle("hidden");
+  </div>
+</nav>
+
+<!-- Modal -->
+<div id="productModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-gray-800 p-6 rounded-lg w-96">
+    <h2 class="text-white text-lg mb-4 rounded">Add Product</h2>
+    <form id="addProductForm" class="space-y-3">
+      {% csrf_token %}
+      <input type="text" name="name" placeholder="Product Name" class="w-full mb-2 p-2 rounded-md" required/>
+      <textarea name="description" placeholder="Description" class="w-full mb-2 p-2 rounded-md" required></textarea>
+      <input type="number" step="0.01" name="price" placeholder="Price" class="w-full mb-2 p-2 rounded-md" required/>
+      
+      <!-- Thumbnail URL -->
+      <input type="url" name="thumbnail" placeholder="Thumbnail URL" class="w-full mb-2 p-2 rounded-md"/>
+      
+      <!-- Category -->
+      <select name="category" class="w-full mb-2 p-2 rounded-md">
+        <option value="men">Men</option>
+        <option value="women">Women</option>
+        <option value="Gear">Gear</option>
+      </select>
+      
+      <!-- Is Featured -->
+      <label class="flex items-center gap-2 text-gray-200 mb-2">
+        <input type="checkbox" name="is_featured" class="rounded"/>
+        Featured
+      </label>
+      
+      <button type="submit" class="bg-gray-700 text-white px-4 py-2 rounded-md w-full hover:bg-gray-950 transition-colors">
+        Add
+      </button>
+    </form>
+  </div>
+</div>
+
+
+<!-- JS -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Mobile Menu Toggle
+  const mobileBtn = document.querySelector(".mobile-menu-button");
+  const mobileMenu = document.querySelector(".mobile-menu");
+  mobileBtn?.addEventListener("click", () => mobileMenu.classList.toggle("hidden"));
+
+  // Modal Buttons
+  const openDesktop = document.getElementById("openModalBtnDesktop");
+  const openMobile = document.getElementById("openModalBtnMobile");
+  const productModal = document.getElementById("productModal");
+  const addProductForm = document.getElementById("addProductForm");
+
+  function openModal() { productModal.classList.remove("hidden"); }
+  function closeModal() { addProductForm.reset(); productModal.classList.add("hidden"); }
+
+  openDesktop?.addEventListener("click", openModal);
+  openMobile?.addEventListener("click", openModal);
+  productModal.addEventListener("click", e => { if(e.target === productModal) closeModal(); });
+
+  // AJAX Submit (optional, sesuaikan endpoint)
+  addProductForm?.addEventListener("submit", async e => {
+    e.preventDefault();
+
+    const formData = new FormData(addProductForm);
+    formData.set('user', "{{ user.id }}"); // assign user id
+
+    // Untuk checkbox, kalau tidak dicek, FormData tidak ada → pastikan dikirim false
+    if(!formData.has('is_featured')) formData.set('is_featured', false);
+
+    const csrfToken = addProductForm.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    try {
+      const res = await fetch("{% url 'main:add_product_entry_ajax' %}", {
+        method: "POST",
+        headers: { "X-CSRFToken": csrfToken },
+        body: formData
       });
-    </script>
-  </nav>
+      if(!res.ok) throw new Error("Gagal menambahkan produk");
+      const newProduct = await res.json();
+      console.log("Product added", newProduct);
+      closeModal();
+    } catch(err) {
+      console.error(err);
+      alert("Gagal menambahkan produk");
+    }
+  });
+});
+</script>

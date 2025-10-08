@@ -118,3 +118,24 @@ Flexbox digunakan agar elemen-elemennya bisa rapi, tersusun secara fleksibel, da
 - Modifikasi navbar
 - Memodifikasi tampilan pada templates agar website sesuai dengan color palette
 - Menambahkan no.png yang menampilkan foto jika belum ada produk yang ditambahkan
+
+
+
+TUGAS 6
+----------------------------------------------------------------------------------------------------
+1. Apa perbedaan antara synchronous request dan asynchronous request?
+Sinkronus request berarti browser harus menunggu response sebelum bisa melakukan hal lain. Tampilannya akan diam sampai request selesai. Sedangkan asinkronus request, browser bisa tetap jalan saat ada request yang sedang dijalankan
+
+2. Bagaimana AJAX bekerja di Django (alur request–response)?
+Client membuat request - reuqest dikirim ke server - django menerima request dari views.py (POST atau GET) - django mengirim response berupa Json - JavaScript client menerima response tanpa reload page
+
+3. Apa keuntungan menggunakan AJAX dibandingkan render biasa di Django?
+Saat JavaScript dikirimkan ke client, client bisa menerima tanpa harus melakukan reload, beberapa bagian langsung terupdate. Oleh karena itu, proses ini hemat bandwidth karena hanya mengirimkan yang perlu saja. Dari sisi client, lebih interaktif karena perubahannya terasa instan
+
+4. Bagaimana cara memastikan keamanan saat menggunakan AJAX untuk fitur Login dan Register di Django?
+- Menggunakan CSRF token, jika tidak ada, django akan menolak
+- Django juga melakukan validasi di server
+- Secara default, django juga hashing password client
+
+5. Bagaimana AJAX mempengaruhi pengalaman pengguna (User Experience) pada website?
+Seperti yang sudah dijelaskan sebelumnya, AJAX mampu memperbarui bagian-bagian tanpa mengharuskan client untuk reload page, sehingga website terkesan cepat, interaktif secara real time, dan responsif

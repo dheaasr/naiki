@@ -4,12 +4,76 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    {% block meta %} {% endblock meta %}
+    {% block meta %}{% endblock meta %}
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{% static 'css/global.css' %}"/>
 </head>
 
-<body>
-    {% block content %} {% endblock content %}
+<body class="bg-gray-900 text-gray-100">
+    {% block content %}{% endblock content %}
+
+    <!-- Toast container -->
+    <div id="toast-container" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 flex flex-col items-center space-y-2"></div>
+
+    <!-- Modal container -->
+    <div id="modal-container" class="fixed inset-0 flex items-center justify-center bg-black/50 hidden z-50">
+        <div id="modal-content" class="bg-gray-800 rounded-lg p-6 w-full max-w-lg relative">
+            <!-- Modal content will be injected here -->
+        </div>
+        <button id="modal-close" class="absolute top-2 right-2 text-white hover:text-gray-200 font-bold">×</button>
+    </div>
+
+    <!-- Toast JS -->
+    <script>
+    function showToast(message, type='info', duration=3000) {
+        const container = document.getElementById('toast-container');
+        const colors = {
+            success: 'bg-green-600 text-white',
+            error: 'bg-red-600 text-white',
+            info: 'bg-blue-600 text-white',
+            warning: 'bg-yellow-500 text-black'
+        };
+        const colorClass = colors[type] || colors.info;
+
+        const toast = document.createElement('div');
+        toast.className = `px-4 py-2 rounded-lg shadow-md ${colorClass} transform transition-all duration-300 opacity-0 -translate-y-5`;
+        toast.textContent = message;
+        container.appendChild(toast);
+
+        // Animate in
+        setTimeout(() => {
+            toast.classList.remove('opacity-0', '-translate-y-5');
+            toast.classList.add('opacity-100', 'translate-y-0');
+        }, 10);
+
+        // Animate out
+        setTimeout(() => {
+            toast.classList.add('opacity-0', '-translate-y-5');
+            toast.addEventListener('transitionend', () => toast.remove());
+        }, duration);
+    }
+    </script>
+
+    <!-- Modal JS -->
+    <script>
+    const modalContainer = document.getElementById('modal-container');
+    const modalContent = document.getElementById('modal-content');
+    const modalClose = document.getElementById('modal-close');
+
+    function openModal(htmlContent) {
+        modalContent.innerHTML = htmlContent;
+        modalContainer.classList.remove('hidden');
+    }
+
+    function closeModal() {
+        modalContainer.classList.add('hidden');
+        modalContent.innerHTML = '';
+    }
+
+    modalClose.addEventListener('click', closeModal);
+    modalContainer.addEventListener('click', e => {
+        if(e.target === modalContainer) closeModal();
+    });
+    </script>
 </body>
 </html>
