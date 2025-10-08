@@ -28,7 +28,6 @@
         <a href="?filter=lowest_price" class="{% if request.GET.filter == 'lowest_price' %} bg-gray-950 text-white {% else %} bg-gray-800 text-white border border-gray-300 {% endif %} px-4 py-2 rounded-md font-medium transition-colors hover:bg-gray-950 hover:text-white">Lowest Price</a>
         <a href="?filter=my" class="{% if request.GET.filter == 'my' %} bg-gray-950 text-white {% else %} bg-gray-800 text-white border border-gray-300 {% endif %} px-4 py-2 rounded-md font-medium transition-colors hover:bg-gray-950 hover:text-white">My Products</a>
       </div>
-      <a href="{% url 'main:add_product' %}" class="inline-flex items-center px-4 py-2 bg-gray-700 text-white rounded-md hover:bg-gray-950 transition-colors">+ Add Product</a>
     </div>
 
     <!-- Loading & Error -->
@@ -110,7 +109,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function filterProducts() {
     let filtered = [...allProductsData];
-    if(activeFilter === 'my') filtered = filtered.filter(p => p.user_id === currentUserId);
+    switch(activeFilter) {
+      case 'popular':
+        filtered.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+        break;
+      case 'highest_price':
+        filtered.sort((a, b) => b.price - a.price);
+        break;
+      case 'lowest_price':
+        filtered.sort((a, b) => a.price - b.price);
+        break;
+      case 'my':
+        filtered = filtered.filter(p => String(p.user_id) === currentUserId);
+        break;
+      case 'all':
+      default:
+        break;
+    }
     displayProducts(filtered);
   }
 
