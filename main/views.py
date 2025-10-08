@@ -48,46 +48,52 @@ def show_xml(request):
 
 def show_json(request):
     try:
-        products = Product.objects.all()
-        data = [
-            {
-                "id": p.id,
+        products = Product.objects.select_related('user').all()
+        data = []
+        for p in products:
+            data.append({
+                "id": str(p.id),
                 "name": p.name,
                 "description": p.description,
                 "price": float(p.price),
-                "thumbnail": p.thumbnail if p.thumbnail else "",
-                "user_id": p.user.id if p.user else None,  # <--- aman
+                "category": p.category,
+                "category_display": p.get_category_display(),
+                "thumbnail": p.thumbnail if p.thumbnail else None,  # <--- fix sini
                 "likes": p.likes,
-            }
-            for p in products
-        ]
+                "is_featured": p.is_featured,
+                "user_id": p.user.id if p.user else None,
+                "user_username": p.user.username if p.user else None,
+            })
         return JsonResponse(data, safe=False)
     except Exception as e:
         print("Error fetching products:", e)
         return JsonResponse({"error": str(e)}, status=500)
 
 
-
 def show_json_by_id(request, id):
     try:
         product = Product.objects.select_related('user').get(pk=id)
         data = {
-            'id': product.id,
-            'name': product.name,
-            'description': product.description,
-            'price': float(product.price),  # pastikan JSON friendly
-            'category': product.category,
-            'category_display': product.get_category_display(),
-            'thumbnail': product.thumbnail.url if product.thumbnail else None,
-            'is_featured': product.is_featured,
-            'likes': product.likes,
-            'user_id': product.user_id,
-            'user_username': product.user.username if product.user else None,
+            "id": str(product.id),
+            "name": product.name,
+            "description": product.description,
+            "price": float(product.price),
+            "category": product.category,
+            "category_display": product.get_category_display(),
+            "thumbnail": product.thumbnail if product.thumbnail else None,  # <--- fix sini
+            "likes": product.likes,
+            "is_featured": product.is_featured,
+            "user_id": product.user.id if product.user else None,
+            "user_username": product.user.username if product.user else None,
         }
         return JsonResponse(data)
     except Product.DoesNotExist:
-        return JsonResponse({'detail': 'Not found'}, status=404)
+        return JsonResponse({"error": "Product not found"}, status=404)
+    except Exception as e:
+        print("Error fetching product by id:", e)
+        return JsonResponse({"error": str(e)}, status=500)
 
+    
 def show_xml_by_id(request, id):
     try:
         product_list = Product.objects.get(pk=id)
